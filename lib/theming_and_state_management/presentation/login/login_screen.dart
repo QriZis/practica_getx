@@ -1,106 +1,126 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:tutorial/theming_and_state_management/presentation/home/home_screen.dart';
+import 'package:tutorial/theming_and_state_management/presentation/home/routes/delivery_navigation.dart';
+import 'package:tutorial/theming_and_state_management/presentation/login/login_controller.dart';
 import 'package:tutorial/theming_and_state_management/presentation/theme.dart';
 import 'package:tutorial/theming_and_state_management/presentation/widgets/delivery_button.dart';
 
 const logoSize = 40.0;
 
-class LoginScreen extends StatelessWidget {
-  const LoginScreen({super.key});
+class LoginScreen extends GetWidget<LoginController> {
+  void login() async {
+    final result = await controller.login();
+    if (result) {
+      Get.offAllNamed(DeliveryRoutes.home);
+    } else {
+      Get.snackbar(
+        'Error',
+        'Login incorrecto',
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+      body: Stack(
         children: [
-          Expanded(
-            flex: 2,
-            child: Stack(
-              children: [
-                Positioned.fill(
-                  bottom: logoSize,
-                  child: ClipPath(
-                    clipper: SemiCircleClipper(),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(colors: deliveryGradients),
-                      ),
-                    ),
-                  ),
-                ),
-                Align(
-                  alignment: Alignment.bottomCenter,
-                  child: CircleAvatar(
-                    backgroundColor: Colors.white,
-                    radius: logoSize,
-                    child: Padding(
-                      padding: const EdgeInsets.all(12.0),
-                      child: Image.asset('assets/logo.png'),
-                    ),
-                  ),
-                )
-              ],
-            ),
-          ),
-          Expanded(
-              flex: 4,
-              child: SingleChildScrollView(
-                child: Column(
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Expanded(
+                flex: 2,
+                child: Stack(
                   children: [
-                    const SizedBox(height: 50),
-                    Text(
-                      'Login',
-                      style: TextStyle(
-                          fontSize: 28,
-                          fontWeight: FontWeight.bold,
-                          color: DeliveryColors.purple),
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(
-                          left:
-                              16.0), // Ajusta este valor para cambiar la posición
-                      child: Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          'Username',
-                          style: TextStyle(
-                              fontSize: 15, color: DeliveryColors.purple),
+                    Positioned.fill(
+                      bottom: logoSize,
+                      child: ClipPath(
+                        clipper: SemiCircleClipper(),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(colors: deliveryGradients),
+                          ),
                         ),
                       ),
                     ),
-                    TextField(),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(
-                          left:
-                              16.0), // Ajusta este valor para cambiar la posición
-                      child: Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          'Password',
-                          style: TextStyle(
-                              fontSize: 15, color: DeliveryColors.purple),
+                    Align(
+                      alignment: Alignment.bottomCenter,
+                      child: CircleAvatar(
+                        backgroundColor: Colors.white,
+                        radius: logoSize,
+                        child: Padding(
+                          padding: const EdgeInsets.all(12.0),
+                          child: Image.asset('assets/logo.png'),
                         ),
                       ),
-                    ),
-                    TextField(),
+                    )
                   ],
                 ),
-              )),
-          Padding(
-            padding: const EdgeInsets.all(25),
-            child: DeliveryButton(
-              key: Key('login_button'),
-              text: 'Login',
-              onTap: () {
-                Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(builder: (_) => HomeScreen()));
+              ),
+              Expanded(
+                  flex: 4,
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        const SizedBox(height: 50),
+                        Text(
+                          'Login',
+                          style: TextStyle(
+                              fontSize: 28,
+                              fontWeight: FontWeight.bold,
+                              color: DeliveryColors.purple),
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        TextField(
+                          controller: controller.usernameTextController,
+                          decoration: InputDecoration(
+                            prefixIcon: Icon(
+                              Icons.person_outline,
+                              color: DeliveryColors.purple,
+                            ),
+                            hintText: 'Username',
+                          ),
+                        ),
+                        TextField(
+                          controller: controller.passwordTextController,
+                          decoration: InputDecoration(
+                            prefixIcon: Icon(
+                              Icons.person_outline,
+                              color: DeliveryColors.purple,
+                            ),
+                            hintText: 'Username',
+                          ),
+                        ),
+                      ],
+                    ),
+                  )),
+              Padding(
+                padding: const EdgeInsets.all(25),
+                child: DeliveryButton(
+                  key: Key('login_button'),
+                  text: 'Login',
+                  onTap: login,
+                ),
+              ),
+            ],
+          ),
+          Positioned.fill(
+            child: Obx(
+              () { 
+                if (controller.loginState.value == LoginState.loading) {
+                  return Container(
+                    color: Colors.black26,
+                    child: Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                  );
+                }
+                else{
+                  return SizedBox.shrink();
+                }
               },
             ),
           )

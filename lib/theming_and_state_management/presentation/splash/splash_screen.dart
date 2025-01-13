@@ -12,10 +12,9 @@ class SplashScreen extends GetWidget<SplashController> {
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: deliveryGradients
-          ),
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: deliveryGradients),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -26,20 +25,16 @@ class SplashScreen extends GetWidget<SplashController> {
               radius: 55,
               child: Padding(
                 padding: const EdgeInsets.all(15.0),
-              child: Image.asset(
-                'assets/logo.png'
-                ),
+                child: Image.asset('assets/logo.png'),
               ),
             ),
             const SizedBox(height: 10),
-            Text (
-              'Seguricel', 
-              textAlign: TextAlign.center,
-               style: TextStyle(
-                fontSize: 24, // Cambia el tamaño de la letra
-                color: DeliveryColors.white, // Cambia el color de la letra
-              )
-            ),
+            Text('Seguricel',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 24, // Cambia el tamaño de la letra
+                  color: DeliveryColors.white, // Cambia el color de la letra
+                )),
           ],
         ),
       ),

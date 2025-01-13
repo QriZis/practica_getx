@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:tutorial/theming_and_state_management/data/models/in_memory_products.dart';
-import 'package:tutorial/theming_and_state_management/domain/model/product.dart';
+import 'package:get/get.dart';
+import 'package:tutorial/theming_and_state_management/domain/model/product_cart.dart';
+import 'package:tutorial/theming_and_state_management/presentation/home/cart/cart_controller.dart';
 import 'package:tutorial/theming_and_state_management/presentation/theme.dart';
 import 'package:tutorial/theming_and_state_management/presentation/widgets/delivery_button.dart';
 
-class CartScreen extends StatelessWidget {
+class CartScreen extends GetWidget<CartController> {
   final VoidCallback onShopping;
 
   const CartScreen({super.key, required this.onShopping});
@@ -15,15 +16,18 @@ class CartScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text('Cart'),
       ),
-      body: _FullCart(
-          //   onShopping: onShopping,
+      body: Obx(() => controller.totalItems.value == 0
+              ? _EmptyCart(
+                  onShopping: onShopping,
+                )
+              : _FullCart() //   onShopping: onShopping,
           ),
     );
   }
 }
 
 //Pantalla con el carrito con productos
-class _FullCart extends StatelessWidget {
+class _FullCart extends GetWidget<CartController> {
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -31,16 +35,27 @@ class _FullCart extends StatelessWidget {
         Expanded(
             flex: 3,
             child: Container(
-              child: ListView.builder(
-                itemCount: products.length,
-                scrollDirection: Axis.horizontal,
-                itemExtent: 200,
-                itemBuilder: (context, index) {
-                  final product = products[index];
-                  return _ShoppingCartProduct(
-                    product: product,
-                  ); // Replace with your widget
-                },
+              child: Obx(
+                () => ListView.builder(
+                  itemCount: controller.cartList.length,
+                  scrollDirection: Axis.horizontal,
+                  itemExtent: 200,
+                  itemBuilder: (context, index) {
+                    final productCart = controller.cartList[index];
+                    return _ShoppingCartProduct(
+                      productCart: productCart,
+                      onDelete: () {
+                        controller.deleteProduct(productCart);
+                      },
+                      onIncrement: () {
+                        controller.increment(productCart);
+                      },
+                      onDecrement: () {
+                        controller.decrement(productCart);
+                      },
+                    ); // Replace with your widget
+                  },
+                ),
               ),
             )),
         Expanded(
@@ -73,7 +88,7 @@ class _FullCart extends StatelessWidget {
                                 style: TextStyle(color: DeliveryColors.white),
                               ),
                               Text(
-                                '2',
+                                '0',
                                 style: TextStyle(color: DeliveryColors.white),
                               )
                             ]),
@@ -87,13 +102,18 @@ class _FullCart extends StatelessWidget {
                                   fontSize: 20,
                                 ),
                               ),
-                              Text(
-                                '222',
-                                style: TextStyle(
-                                    color: DeliveryColors.white, fontSize: 20),
-                              ),
-                             
-                            ]), Spacer(),
+                              Obx(() {
+                                final total = controller.totalPrice.value
+                                    .toStringAsFixed(2);
+                                return Text(
+                                  '\$$total USD',
+                                  style: TextStyle(
+                                      color: DeliveryColors.white,
+                                      fontSize: 20),
+                                );
+                              }),
+                            ]),
+                        Spacer(),
                         DeliveryButton(
                             key: Key('cart_button'), onTap: () {}, text: 'Paga')
                       ],
@@ -140,12 +160,20 @@ class _EmptyCart extends StatelessWidget {
 
 //Smulación de los productos en el carrito
 class _ShoppingCartProduct extends StatelessWidget {
-  const _ShoppingCartProduct({super.key, required this.product});
-
-  final Product product;
+  const _ShoppingCartProduct(
+      {super.key,
+      required this.productCart,
+      required this.onDelete,
+      required this.onIncrement,
+      required this.onDecrement});
+  final ProductCart productCart;
+  final VoidCallback onDelete;
+  final VoidCallback onIncrement;
+  final VoidCallback onDecrement;
 
   @override
   Widget build(BuildContext context) {
+    final product = productCart.product;
     return Padding(
       padding: const EdgeInsets.all(15),
       child: Stack(children: [
@@ -154,30 +182,37 @@ class _ShoppingCartProduct extends StatelessWidget {
           child: Column(
             children: [
               Image.asset(
-                product.image,
+                productCart.product.image,
                 width: 100, // Ajusta el ancho según tus necesidades
                 height: 100, // Ajusta la altura según tus necesidades
                 fit: BoxFit.cover,
               ),
               Text(
-                product.name,
+                productCart.product.name,
               ),
               Text(
-                product.description,
+                productCart.product.description,
+                style: TextStyle(
+                  fontSize:
+                      14.0, // Ajusta el tamaño del texto según tus necesidades
+                ),
+                maxLines: 2, // Limita el texto a 2 líneas
+                overflow: TextOverflow
+                    .ellipsis, // Agrega puntos suspensivos si el texto es demasiado largo
               ),
               Row(
                 children: [
                   InkWell(
                     child: Icon(Icons.remove),
-                    onTap: () {},
+                    onTap: onDecrement,
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 8),
-                    child: Text('2'),
+                    child: Text(productCart.quantity.toString()),
                   ),
                   InkWell(
                     child: Icon(Icons.add),
-                    onTap: () {},
+                    onTap: onIncrement,
                   ),
                   Text('\$${product.price}'),
                 ],
@@ -188,7 +223,7 @@ class _ShoppingCartProduct extends StatelessWidget {
         Positioned(
           right: 0,
           child: InkWell(
-              onTap: () {},
+              onTap: onDelete,
               child: CircleAvatar(
                 backgroundColor: DeliveryColors.pink,
                 child: Icon(Icons.delete_outline),

@@ -4,7 +4,6 @@ import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 import 'package:tutorial/theming_and_state_management/domain/repository/api_repository.dart';
 import 'package:tutorial/theming_and_state_management/domain/repository/local_storage_repository.dart';
 import 'package:tutorial/theming_and_state_management/presentation/home/routes/delivery_navigation.dart';
-import 'package:tutorial/theming_and_state_management/presentation/splash/splash_biding.dart';
 
 class SplashController extends GetxController {
   final LocalRepositoryInterface localRepositoryInterface;
@@ -23,15 +22,14 @@ class SplashController extends GetxController {
 
   void validateSession() async {
     final token = await localRepositoryInterface.getToken();
-    if (token != null){
+    if (token != null
+        && token.isNotEmpty
+        && token != 'null') {
       final user = await apiRepositoryInterface.getUserFromToken(token);
       await localRepositoryInterface.saveUser(user);
-      Get.offNamed(DeliveryRoutes.home); 
-
+      Get.offNamed(DeliveryRoutes.home);
     } else {
-     Get.offNamed(DeliveryRoutes.login); 
+      Get.offNamed(DeliveryRoutes.login);
     }
   }
-
-
 }

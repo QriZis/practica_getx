@@ -7,8 +7,11 @@ class SplashBiding extends Bindings {
     print('SplashBiding');
     Get.lazyPut(
       () => SplashController(
-          apiRepositoryInterface: Get.find(),
-          localRepositoryInterface: Get.find(),
-        ));
+        apiRepositoryInterface: Get.find(),
+        localRepositoryInterface: Get.find(),
+      ),
+    );
   }
 }
+
+
