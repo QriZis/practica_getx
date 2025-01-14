@@ -39,7 +39,7 @@ class _FullCart extends GetWidget<CartController> {
                 () => ListView.builder(
                   itemCount: controller.cartList.length,
                   scrollDirection: Axis.horizontal,
-                  itemExtent: 200,
+                  itemExtent: 300,
                   itemBuilder: (context, index) {
                     final productCart = controller.cartList[index];
                     return _ShoppingCartProduct(
@@ -53,6 +53,8 @@ class _FullCart extends GetWidget<CartController> {
                       onDecrement: () {
                         controller.decrement(productCart);
                       },
+
+                      
                     ); // Replace with your widget
                   },
                 ),
@@ -181,7 +183,7 @@ class _ShoppingCartProduct extends StatelessWidget {
           elevation: 8,
           child: Column(
             children: [
-              Image.asset(
+              Image.network(
                 productCart.product.image,
                 width: 100, // Ajusta el ancho según tus necesidades
                 height: 100, // Ajusta la altura según tus necesidades

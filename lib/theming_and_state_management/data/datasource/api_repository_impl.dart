@@ -1,4 +1,8 @@
+import 'dart:convert';
+
 import 'package:tutorial/theming_and_state_management/data/models/in_memory_products.dart';
+import 'package:http/http.dart' as http;
+//import 'package:tutorial/theming_and_state_management/data/models/product_list.dart'; // Assuming this file contains the 'products' variable
 import 'package:tutorial/theming_and_state_management/domain/exception/auth_exception.dart';
 import 'package:tutorial/theming_and_state_management/domain/model/product.dart';
 import 'package:tutorial/theming_and_state_management/domain/model/user.dart';
@@ -59,7 +63,13 @@ class ApiRepositoryImpl extends ApiRepositoryInterface {
 
   @override
   Future<List<Product>> getProducts() async {
-    await Future.delayed(const Duration(seconds: 1));
-    return Future.value(products);
+    final response = await http.get(Uri.parse('https://fakestoreapi.com/products'));
+    if (response.statusCode == 200) {
+      final List<dynamic> data = jsonDecode(response.body);
+      return data.map((item) => Product.fromJson(item)).toList();
+    } else {
+      throw Exception('Failed to load products');
+    }
   }
+  
 }

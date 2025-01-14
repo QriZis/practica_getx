@@ -12,6 +12,10 @@ dependencies:
 
   get: ^4.3.8
   shared_preferences: ^2.0.6
+  http: ^1.2.2
+  sqflite: ^2.4.1
+  path: ^1.9.0
+
 
 dev_dependencies:
   flutter_test:
@@ -23,5 +27,4 @@ flutter:
   assets:
    - assets/logo.png
    - assets/sad.png
-   - assets/perfiles/pep.jpg
-   - assets/perfiles/cruyff.jpg
+   - assets/perfiles/

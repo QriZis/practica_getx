@@ -56,9 +56,9 @@ class _ItemProduct extends StatelessWidget {
         elevation: 8,
         child: Column(
           children: [
-            Image.asset(
-              product.image, width: 50, // Ajusta el ancho según tus necesidades
-              height: 50, // Ajusta la altura según tus necesidades
+            Image.network(
+              product.image, width: 100, // Ajusta el ancho según tus necesidades
+              height: 100, // Ajusta la altura según tus necesidades
               fit: BoxFit.cover,
             ),
             Text(

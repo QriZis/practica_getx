@@ -12,4 +12,15 @@ final String name;
 final String description;
 final double price;
 final String image;
+
+factory Product.fromJson(Map<String, dynamic> json) {
+    return Product(
+    //  id: json['id'],
+      name: json['title'],
+      price: json['price'].toDouble(),
+      description: json['description'],
+    //  category: json['category'],
+      image: json['image'],
+    );
+  }
 }
