@@ -10,7 +10,7 @@ import 'package:tutorial/theming_and_state_management/domain/repository/api_repo
 import 'package:tutorial/theming_and_state_management/domain/request/login_request.dart';
 import 'package:tutorial/theming_and_state_management/domain/response/login_response.dart';
 
-class ApiRepositoryImpl extends ApiRepositoryInterface {
+class ApiRepositoryImpl implements ApiRepositoryInterface {
   @override
   Future<User> getUserFromToken(String token) async {
     //  await Future.delayed(const Duration(seconds: 3));
