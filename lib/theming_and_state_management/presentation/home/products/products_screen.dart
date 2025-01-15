@@ -57,18 +57,22 @@ class _ItemProduct extends StatelessWidget {
         child: Column(
           children: [
             Image.network(
-              product.image, width: 100, // Ajusta el ancho según tus necesidades
-              height: 100, // Ajusta la altura según tus necesidades
+              product.image, width: 50, // Ajusta el ancho según tus necesidades
+              height: 50, // Ajusta la altura según tus necesidades
               fit: BoxFit.cover,
             ),
             Text(
               product.name,
+              style: TextStyle(
+                fontSize:
+                    10.0, // Ajusta el tamaño del texto según tus necesidades
+              ),
             ),
             Text(
               product.description,
               style: TextStyle(
                 fontSize:
-                    14.0, // Ajusta el tamaño del texto según tus necesidades
+                    8.0, // Ajusta el tamaño del texto según tus necesidades
               ),
               maxLines: 2, // Limita el texto a 2 líneas
               overflow: TextOverflow
